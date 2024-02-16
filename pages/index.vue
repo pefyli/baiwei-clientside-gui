@@ -1,10 +1,12 @@
 <template lang="pug">
-tutorial
+HeaderBar
 </template>
 
 <script>
 import Vue from 'vue'
+import HeaderBar from '@/components/HeaderBar'
 
 export default Vue.extend({
-  name: 'IndexPage'
+  name: 'IndexPage',
+  components: HeaderBar
 })
