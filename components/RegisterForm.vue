@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="registrationForm" :model="registrationForm" status-icon label-width="120px">
+  <el-form v-model="registrationForm" status-icon label-width="120px">
     <el-form-item label="帳號">
       <el-input v-model="registrationForm.account" class="el-input-custom" />
     </el-form-item>
@@ -7,7 +7,7 @@
       <el-input v-model="registrationForm.password" class="el-input-custom" type="password" autocomplete="off" />
     </el-form-item>
     <el-form-item label="會員名稱">
-      <el-input v-model="registrationForm.memberName" class="el-input-custom" />
+      <el-input v-model="registrationForm.member_name" class="el-input-custom" />
     </el-form-item>
     <el-form-item label="手機">
       <el-input v-model="registrationForm.phone" class="el-input-custom" />
@@ -23,24 +23,37 @@
 </template>
 
 <script lang="ts" setup>
-const registrationForm = {
+import { reactive } from "vue";
+import { useRouter } from "vue-router";
+import { register } from "~/server/services/memberService";
+
+const router = useRouter();
+
+// todo: add the validation here to prevent any undefined values sent to backend.
+const registrationForm = reactive({
   account: "",
   password: "",
-  memberName: "",
+  member_name: "",
   phone: "",
   address: "",
+});
+
+const onSubmit = async () => {
+  const res = await register(JSON.stringify(registrationForm));
+  if (res) {
+    router.push("/login");
+  }
 };
-const onSubmit = () => {
-  // Add your submission logic here
-};
+
 const onReset = () => {
   registrationForm.account = "";
   registrationForm.password = "";
-  registrationForm.memberName = "";
+  registrationForm.member_name = "";
   registrationForm.phone = "";
   registrationForm.address = "";
 };
 </script>
+
 <style scoped>
 .el-input-custom {
   width: 300px;

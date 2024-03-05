@@ -14,25 +14,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { authentication } from "~/server/services/memberService";
 
 const router = useRouter();
 
-const loginForm = ref({
+// todo: add the validation here to prevent any undefined values sent to backend.
+const loginForm = reactive({
   account: "",
   password: "",
 });
 
 const onSubmit = async () => {
-  await authentication(loginForm.value.account, loginForm.value.password);
+  await authentication(JSON.stringify(loginForm));
   router.push("/");
 };
 
 const onReset = () => {
-  loginForm.value.account = "";
-  loginForm.value.password = "";
+  loginForm.account = "";
+  loginForm.password = "";
 };
 </script>
 
