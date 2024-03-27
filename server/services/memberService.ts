@@ -14,9 +14,31 @@ export async function authentication(loginForm: any) {
       throw new Error(error.message);
     },
     onResponse({ response }) {
-      memberStore.login(new Member(response._data.data));
+      if (response.ok) {
+        memberStore.login(new Member(response._data.data));
+      } else {
+        throw new Error(response.statusText);
+      }
     },
   });
+}
+
+export function getMember(): Member | null {
+  const memberStore = useMemberStore();
+  return memberStore.getMember;
+}
+
+export async function updateMember(memberInfo: Member): Promise<Member> {
+  const response: any = await $fetch("/api/member/" + memberInfo.member_id, {
+    onRequest({ options }) {
+      options.body = memberInfo;
+      options.method = "PUT";
+    },
+    onRequestError({ error }) {
+      throw new Error(error.message);
+    },
+  });
+  return new Member(response._data.data);
 }
 
 export async function register(registerForm: any): Promise<boolean> {
