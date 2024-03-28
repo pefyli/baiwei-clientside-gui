@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Member } from "~/models/memberModel";
+import { Member } from "~/models/MemberModel";
 
 interface MemberState {
   isLoggedIn: boolean;

@@ -25,6 +25,8 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import { ElMessage, ElMessageBox, type Action } from "element-plus";
+import { GeneralMsg } from "~/models/GeneralMsg";
 import { register } from "~/server/services/memberService";
 
 const router = useRouter();
@@ -39,11 +41,25 @@ const registrationForm = reactive({
 });
 
 const formRules = {
-  account: [{ required: true, message: "請填入帳號", trigger: "blur" }],
-  password: [{ required: true, message: "請填入密碼", trigger: "blur" }],
-  member_name: [{ required: true, message: "請填入會員姓名", trigger: "blur" }],
-  phone: [{ required: true, message: "請填入電話", trigger: "blur" }],
-  address: [{ required: true, message: "請填入地址", trigger: "blur" }],
+  account: [{ required: true, message: GeneralMsg.AccountFillIn, trigger: "blur" }],
+  password: [{ required: true, message: GeneralMsg.PasswordFillIn, trigger: "blur" }],
+  member_name: [{ required: true, message: GeneralMsg.MemberNameFillIn, trigger: "blur" }],
+  phone: [{ required: true, message: GeneralMsg.PhoneFillIn, trigger: "blur" }],
+  address: [{ required: true, message: GeneralMsg.AddressFillIn, trigger: "blur" }],
+};
+
+const open = (message: string, title?: string) => {
+  ElMessageBox.alert(message, title, {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: "OK",
+    callback: (action: Action) => {
+      ElMessage({
+        type: "info",
+        message: `action: ${action}`,
+      });
+    },
+  });
 };
 
 const onSubmit = async () => {
@@ -51,6 +67,7 @@ const onSubmit = async () => {
   if (isValid) {
     const res = await register(JSON.stringify(registrationForm));
     if (res) {
+      open("註冊" + GeneralMsg.Success, undefined);
       router.push("/login");
     }
   } else {

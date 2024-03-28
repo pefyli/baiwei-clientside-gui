@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { getMember, updateMember } from "~/server/services/memberService";
-import { Member } from "~/models/memberModel";
+import { Member } from "~/models/MemberModel";
 
 const memberInfo = ref<Member | null>(null);
 const editMode = ref<Record<string, boolean>>({});

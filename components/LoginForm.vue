@@ -17,7 +17,10 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import { ElMessage, ElMessageBox, type Action } from "element-plus";
 import { authentication } from "~/server/services/memberService";
+import { ErrorMsg, ErrorStrToEum } from "~/models/ErrorMsg";
+import { GeneralMsg } from "~/models/GeneralMsg";
 
 const router = useRouter();
 
@@ -28,8 +31,8 @@ const loginForm = reactive({
 });
 
 const formRules = {
-  account: [{ required: true, message: "請填入帳號", trigger: "blur" }],
-  password: [{ required: true, message: "請填入密碼", trigger: "blur" }],
+  account: [{ required: true, message: GeneralMsg.AccountFillIn, trigger: "blur" }],
+  password: [{ required: true, message: GeneralMsg.PasswordFillIn, trigger: "blur" }],
 };
 
 const onSubmit = async () => {
@@ -37,15 +40,28 @@ const onSubmit = async () => {
     const isValid = await loginFormValidation.value?.validate();
     if (isValid) {
       await authentication(JSON.stringify(loginForm));
+      open("登入" + GeneralMsg.Success, undefined);
       router.push("/");
-    } else {
-      return false;
     }
   } catch (error: any) {
     if (error.message !== undefined) {
-      alert(error.message);
+      open(ErrorStrToEum(error.message), ErrorMsg.Error);
     }
   }
+};
+
+const open = (message: string, title?: string) => {
+  ElMessageBox.alert(message, title, {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: "OK",
+    callback: (action: Action) => {
+      ElMessage({
+        type: "info",
+        message: `action: ${action}`,
+      });
+    },
+  });
 };
 
 const onReset = () => {

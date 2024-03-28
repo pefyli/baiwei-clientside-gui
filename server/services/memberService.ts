@@ -1,4 +1,4 @@
-import { Member } from "~/models/memberModel";
+import { Member } from "~/models/MemberModel";
 import { useMemberStore } from "~/store/memberStore";
 
 // We should think about how to make interceptors globally, cause has many duplication here.
@@ -17,7 +17,7 @@ export async function authentication(loginForm: any) {
       if (response.ok) {
         memberStore.login(new Member(response._data.data));
       } else {
-        throw new Error(response.statusText);
+        throw new Error(response._data);
       }
     },
   });
