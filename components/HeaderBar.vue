@@ -22,7 +22,7 @@
       </el-menu-item>
       <el-menu-item class="el-menu-custom">
         <input v-model="searchTerm" type="text" /> &nbsp;
-        <el-button @click="search">搜尋</el-button>
+        <el-button @click="performSearch">搜尋</el-button>
       </el-menu-item>
     </el-menu>
   </div>
@@ -35,7 +35,6 @@ import { ElMessageBox, type Action, ElMessage } from "element-plus";
 import { ref } from "vue";
 import { useMemberStore } from "~/store/memberStore";
 import { GeneralMsg } from "~/models/GeneralMsg";
-import { searchProduct } from "~/server/services/productService";
 import { ErrorMsg } from "~/models/ErrorMsg";
 
 const memberStore = useMemberStore();
@@ -51,16 +50,16 @@ const logout = () => {
   router.push("/login");
 };
 
-const search = async () => {
-  if (!searchTerm.value.trim()) {
+const performSearch = () => {
+  const term = searchTerm.value.trim();
+  if (!term) {
     // Handle empty search term
-    ElMessage.error("Please enter a search term.");
+    ElMessage.error("請輸入搜尋條件。");
     return;
   }
 
   try {
-    const searchResults = await searchProduct(searchTerm.value);
-    console.log(searchResults);
+    router.push({ path: "/searchresult", query: { term } });
   } catch (error) {
     open("搜尋失敗，請稍後再試。", ErrorMsg.Error);
   }

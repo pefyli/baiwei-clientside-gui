@@ -22,17 +22,18 @@
       <p>產品價格: {{ product.price }}</p>
       <p>產品描述: {{ product.product_description }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>
+      <el-button class="buy-button"> 立即購買 </el-button>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { getProduct } from "~/server/services/productService";
 
 const productList = ref([]); // Initialize as empty array
-const orderByTime = ref("orderByTime"); // Default order by time
-const orderByPrice = ref("orderByPrice"); // Default order by price
+const orderByTime = ref(""); // Default order by time
+const orderByPrice = ref(""); // Default order by price
 
 // Watch for changes in orderByTime and orderByPrice
 watch(orderByTime, (newValue, oldValue) => {
