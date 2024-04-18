@@ -17,10 +17,9 @@
   </div>
   <br /><br />
   <div class="product-container">
-    <div v-for="product in sortedProductList" :key="product.id" style="border-style: double" class="product-card">
+    <div v-for="product in sortedProductList" :key="product.product_id" style="border-style: double" class="product-card">
       <p>產品名稱: {{ product.product_name }}</p>
       <p>產品價格: {{ product.price }}</p>
-      <p>產品描述: {{ product.product_description }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>
       <el-button class="buy-button"> 立即購買 </el-button>
     </div>
@@ -28,21 +27,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
+import type { Product } from "~/models/ProductModel";
 import { getProduct } from "~/server/services/productService";
 
-const productList = ref([]); // Initialize as empty array
+const productList = ref<Product[]>([]); // Initialize as empty array
 const orderByTime = ref(""); // Default order by time
 const orderByPrice = ref(""); // Default order by price
 
 // Watch for changes in orderByTime and orderByPrice
-watch(orderByTime, (newValue, oldValue) => {
+watch(orderByTime, (newValue: string, oldValue: string) => {
   if (newValue !== "" && newValue !== oldValue) {
     orderByPrice.value = ""; // Reset orderByPrice
   }
 });
 
-watch(orderByPrice, (newValue, oldValue) => {
+watch(orderByPrice, (newValue: string, oldValue: any) => {
   if (newValue !== "" && newValue !== oldValue) {
     orderByTime.value = ""; // Reset orderByTime
   }
@@ -61,9 +61,17 @@ const sortedProductList = computed(() => {
 
   // Sort by time
   if (orderByTime.value === "orderByTimeDesc") {
-    sortedProducts.sort((a, b) => new Date(b.create_datetime) - new Date(a.create_datetime));
+    sortedProducts.sort((a, b) => {
+      const dateA = new Date(a.create_datetime);
+      const dateB = new Date(b.create_datetime);
+      return dateB.getTime() - dateA.getTime();
+    });
   } else if (orderByTime.value === "orderByTimeAsc") {
-    sortedProducts.sort((a, b) => new Date(a.create_datetime) - new Date(b.create_datetime));
+    sortedProducts.sort((a, b) => {
+      const dateA = new Date(a.create_datetime);
+      const dateB = new Date(b.create_datetime);
+      return dateA.getTime() - dateB.getTime();
+    });
   }
 
   // Sort by price
