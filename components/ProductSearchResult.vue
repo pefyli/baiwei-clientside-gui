@@ -15,17 +15,26 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { searchProduct } from "~/server/services/productService";
 import type { Product } from "~/models/ProductModel";
+
 const router = useRouter();
 
 // Accessing the search parameter from the URL
-const searchTerm = router.currentRoute.value.query.term as string;
+const searchTerm = ref(router.currentRoute.value.query.term as string);
 const searchResult = ref<Product[]>([]); // Initialize as empty array
 
+watch(
+  () => router.currentRoute.value,
+  async (to) => {
+    const newTerm = to.query.term as string;
+    await fetchSearch(newTerm);
+  },
+);
+
 onMounted(async () => {
-  await fetchSearch(searchTerm);
+  await fetchSearch(searchTerm.value);
 });
 
 const fetchSearch = async (searchTerm: string) => {
