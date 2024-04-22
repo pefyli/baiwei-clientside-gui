@@ -1,3 +1,11 @@
+div-block {
+    margin-bottom: 50px; /* Adjust the margin-bottom as needed */
+}
+
+input {
+    width: 250px;
+}
+
 .parent {
     position: relative;
 }
@@ -7,4 +15,27 @@
     left: 45%;
     transform: translate(-50%, -50%);
 }
+
+.product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust column width as needed */
+    grid-gap: 20px; /* Adjust the gap between product cards */
+  }
   
+.product-card {
+    border: 2px double #000; /* You can adjust the border style */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.product-button {
+    align-self: flex-end; /* Align the button to the end of the flex container */
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the end of the container */
+}
+

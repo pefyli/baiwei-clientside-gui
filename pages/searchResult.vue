@@ -2,5 +2,5 @@
 br
 HeaderBar
 br
-ProductPage
+ProductSearchResult
 </template>
