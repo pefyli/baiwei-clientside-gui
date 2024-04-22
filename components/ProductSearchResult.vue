@@ -1,14 +1,13 @@
 <!-- ProductSearchResult.vue -->
 <template>
-  <div>
-    <!-- Display search results here -->
-    <div class="product-container">
-      <div v-for="product in searchResult" :key="product.product_id" style="border-style: double" class="product-card">
-        <p>產品名稱: {{ product.product_name }}</p>
-        <p>產品價格: {{ product.price }}</p>
-        <p>庫存量: {{ product.inventory_quantity }}</p>
-        <el-button class="buy-button"> 立即購買 </el-button>
-      </div>
+  <!-- Display search results here -->
+  <div class="product-container">
+    <div v-for="product in searchResult" :key="product.product_id" style="border-style: double" class="product-card">
+      <p>產品名稱: {{ product.product_name }}</p>
+      <p>產品價格: {{ product.price }}</p>
+      <p>庫存量: {{ product.inventory_quantity }}</p>
+      <el-button class="product-button"> 立即購買 </el-button>
+      <el-button class="product-button"> 加入購物車 </el-button>
     </div>
   </div>
 </template>

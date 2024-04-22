@@ -30,7 +30,12 @@ input {
     position: relative;
 }
 
-.buy-button {
+.product-button {
     align-self: flex-end; /* Align the button to the end of the flex container */
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the end of the container */
 }
 

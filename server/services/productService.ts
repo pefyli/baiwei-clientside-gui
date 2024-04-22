@@ -1,6 +1,6 @@
 import { Product } from "~/models/ProductModel";
 
-export async function getProduct(): Promise<Product[]> {
+export async function getProducts(): Promise<Product[]> {
   const productList: Product[] = [];
   const response: any = await $fetch("/api/product/", {
     onRequest({ options }) {
@@ -15,6 +15,18 @@ export async function getProduct(): Promise<Product[]> {
     productList.push(product);
   });
   return productList;
+}
+
+export async function getProductById(productId: number): Promise<Product> {
+  const response: any = await $fetch("/api/product/" + productId, {
+    onRequest({ options }) {
+      options.method = "GET";
+    },
+    onRequestError({ error }) {
+      throw new Error(error.message);
+    },
+  });
+  return new Product(response.data);
 }
 
 export async function searchProduct(searchTerm: string): Promise<Product[]> {

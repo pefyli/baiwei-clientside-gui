@@ -21,7 +21,14 @@
       <p>產品名稱: {{ product.product_name }}</p>
       <p>產品價格: {{ product.price }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>
-      <el-button class="buy-button"> 立即購買 </el-button>
+      <div class="button-container">
+        <div>
+          <NuxtLink :to="'/productpage?product_id=' + product.product_id">
+            <el-button class="product-button">立即購買</el-button>
+          </NuxtLink>
+        </div>
+        <el-button class="product-button"> 加入購物車 </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -29,7 +36,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from "vue";
 import type { Product } from "~/models/ProductModel";
-import { getProduct } from "~/server/services/productService";
+import { getProducts } from "~/server/services/productService";
 
 const productList = ref<Product[]>([]); // Initialize as empty array
 const orderByTime = ref(""); // Default order by time
@@ -53,7 +60,7 @@ onMounted(async () => {
 });
 
 const fetchProductList = async () => {
-  productList.value = await getProduct();
+  productList.value = await getProducts();
 };
 
 const sortedProductList = computed(() => {
