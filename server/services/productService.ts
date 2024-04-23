@@ -31,7 +31,7 @@ export async function getProductById(productId: number): Promise<Product> {
 
 export async function searchProduct(searchTerm: string): Promise<Product[]> {
   const productList: Product[] = [];
-  const response: any = await $fetch("/api/product/search?search_term=" + searchTerm, {
+  const response: any = await $fetch("/api/search?search_term=" + searchTerm, {
     onRequest({ options }) {
       options.method = "GET";
     },

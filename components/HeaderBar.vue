@@ -24,6 +24,9 @@
         <input v-model="searchTerm" type="text" /> &nbsp;
         <el-button @click="performSearch">搜尋</el-button>
       </el-menu-item>
+      <el-menu-item class="el-right">
+        <NuxtLink to="/shoppingcart"> 購物車 </NuxtLink>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>
