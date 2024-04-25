@@ -1,9 +1,9 @@
 import { ShoppingCart } from "~/models/ShoppingCartModel";
 
 export async function addToCart(memberId: number, productId: number, amount: number) {
-  const response: any = await $fetch("/api/cart/" + memberId, {
+  const response: any = await $fetch("/api/cart", {
     onRequest({ options }) {
-      options.body = { product_id: productId, amount };
+      options.body = { member_id: memberId, product_id: productId, amount };
       options.method = "POST";
     },
     onRequestError({ error }) {
@@ -15,7 +15,7 @@ export async function addToCart(memberId: number, productId: number, amount: num
 
 export async function getMemberCart(memberId: number): Promise<ShoppingCart[]> {
   const shoppingCartList: ShoppingCart[] = [];
-  const response: any = await $fetch("/api/cart/" + memberId, {
+  const response: any = await $fetch("/api/cart?member_id=" + memberId, {
     onRequest({ options }) {
       options.method = "GET";
     },
@@ -30,11 +30,36 @@ export async function getMemberCart(memberId: number): Promise<ShoppingCart[]> {
   return shoppingCartList;
 }
 
-export async function updateProductAmountByMember(memberId: number, amount: number, productId: number) {
-  const response: any = await $fetch("/api/cart/" + memberId + "/" + productId, {
+export async function updateProductAmount(cart: ShoppingCart) {
+  const response: any = await $fetch("/api/cart/" + cart.cart_id, {
     onRequest({ options }) {
-      options.body = { amount };
+      options.body = { member_id: cart.member_id, product_id: cart.product.product_id, amount: cart.amount };
       options.method = "PUT";
+    },
+    onRequestError({ error }) {
+      throw new Error(error.message);
+    },
+  });
+  return new ShoppingCart(response.data);
+}
+
+export async function deleteCart(carId: number) {
+  const response: any = await $fetch("/api/cart/" + carId, {
+    onRequest({ options }) {
+      options.method = "DELETE";
+    },
+    onRequestError({ error }) {
+      throw new Error(error.message);
+    },
+  });
+  return new ShoppingCart(response.data);
+}
+
+export async function cleanupCart(memberId: number) {
+  const response: any = await $fetch("/api/cart", {
+    onRequest({ options }) {
+      options.body = { member_id: memberId };
+      options.method = "DELETE";
     },
     onRequestError({ error }) {
       throw new Error(error.message);

@@ -12,25 +12,33 @@
         </div>
       </div>
       <p>金額: {{ cart.product.price * cart.amount }}</p>
+      <div class="button-container">
+        <div>
+          <el-button class="product-button" @click="deleteProductFromCart(cart.cart_id)">移除</el-button>
+        </div>
+      </div>
     </div>
-    <p>總計: {{ calculateTotal }}</p>
+    <div>
+      <el-button v-if="shoppingCart.length" class="product-button" @click="cleanupShoppingCart">清空購物車</el-button>
+    </div>
+    <p v-if="shoppingCart.length">總計: {{ calculateTotal }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import { getMember } from "~/server/services/memberService";
-import { getMemberCart, updateProductAmountByMember } from "~/server/services/cartService";
+import { getMemberCart, updateProductAmount, deleteCart, cleanupCart } from "~/server/services/cartService";
 import type { ShoppingCart } from "~/models/ShoppingCartModel";
 
 const shoppingCart = ref<ShoppingCart[]>([]); // Initialize as empty array
+const memberId = getMember()?.member_id;
 
 onMounted(async () => {
   await getCart();
 });
 
 const getCart = async () => {
-  const memberId = getMember()?.member_id;
   if (memberId !== undefined) {
     shoppingCart.value = await getMemberCart(memberId);
   } else {
@@ -41,14 +49,14 @@ const getCart = async () => {
 const incrementQuantity = async (cart: ShoppingCart) => {
   if (cart.amount < cart.product.inventory_quantity) {
     cart.amount++;
-    await updateProductAmountByMember(cart.member_id, cart.amount, cart.product.product_id);
+    await updateProductAmount(cart);
   }
 };
 
 const decrementQuantity = async (cart: ShoppingCart) => {
   if (cart.amount > 1) {
     cart.amount--;
-    await updateProductAmountByMember(cart.member_id, cart.amount, cart.product.product_id);
+    await updateProductAmount(cart);
   }
 };
 
@@ -57,6 +65,22 @@ const calculateTotal = computed(() => {
     return total + cart.product.price * cart.amount;
   }, 0);
 });
+
+const deleteProductFromCart = async (cartId: number) => {
+  const index = shoppingCart.value.findIndex((cart) => cart.cart_id === cartId);
+  // If the cart item is found, remove it from the shoppingCart array
+  if (index !== -1) {
+    shoppingCart.value.splice(index, 1);
+  }
+  await deleteCart(cartId);
+};
+
+const cleanupShoppingCart = async () => {
+  if (memberId) {
+    shoppingCart.value = [];
+    await cleanupCart(memberId);
+  }
+};
 </script>
 
 <style scoped>
