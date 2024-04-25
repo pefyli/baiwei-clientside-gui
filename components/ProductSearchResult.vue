@@ -7,8 +7,11 @@
       <p>產品價格: {{ product.price }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>
       <div class="button-container">
-        <el-button class="product-button"> 立即購買 </el-button>
-        <el-button class="product-button"> 加入購物車 </el-button>
+        <div>
+          <NuxtLink :to="'/productpage?product_id=' + product.product_id">
+            <el-button class="product-button">立即購買</el-button>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>

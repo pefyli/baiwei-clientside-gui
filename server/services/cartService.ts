@@ -29,3 +29,16 @@ export async function getMemberCart(memberId: number): Promise<ShoppingCart[]> {
   });
   return shoppingCartList;
 }
+
+export async function updateProductAmountByMember(memberId: number, amount: number, productId: number) {
+  const response: any = await $fetch("/api/cart/" + memberId + "/" + productId, {
+    onRequest({ options }) {
+      options.body = { amount };
+      options.method = "PUT";
+    },
+    onRequestError({ error }) {
+      throw new Error(error.message);
+    },
+  });
+  return new ShoppingCart(response.data);
+}
