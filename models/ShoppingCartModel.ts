@@ -1,7 +1,7 @@
 import type { Product } from "./ProductModel";
 
 export class ShoppingCart {
-  member_id: number;
+  member_id?: number;
   cart_id: number;
   amount: number;
   create_datetime: string;

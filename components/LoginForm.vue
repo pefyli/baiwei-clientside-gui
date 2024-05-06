@@ -40,12 +40,17 @@ const onSubmit = async () => {
     const isValid = await loginFormValidation.value?.validate();
     if (isValid) {
       await authentication(JSON.stringify(loginForm));
-      open("登入" + GeneralMsg.Success, undefined);
-      router.push("/");
     }
   } catch (error: any) {
     if (error.message !== undefined) {
       open(ErrorStrToEum(error.message), ErrorMsg.Error);
+    }
+  } finally {
+    open("登入" + GeneralMsg.Success, undefined);
+    router.push("/");
+    // remove the cart info from localstorage if member have cart without login.
+    if (localStorage.getItem("carts")) {
+      localStorage.removeItem("carts");
     }
   }
 };

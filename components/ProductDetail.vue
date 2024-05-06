@@ -33,6 +33,7 @@ import { getMember } from "~/server/services/memberService";
 import { addToCart } from "~/server/services/cartService";
 import { ErrorStrToEum, ErrorMsg } from "~/models/ErrorMsg";
 import { GeneralMsg } from "~/models/GeneralMsg";
+import { getUUID } from "~/server/services/utilService";
 
 const router = useRouter();
 
@@ -51,17 +52,34 @@ const addProductToCart = async (productId: number, amount: number) => {
   try {
     const memberId = getMember()?.member_id;
     if (memberId !== undefined) {
-      const response = await addToCart(memberId, productId, amount);
-      if (response) {
-        open("加入購物車" + GeneralMsg.Success, undefined);
-      }
+      await addToCart(memberId, productId, amount);
     } else {
       // add cart info into localStorage
+      const carts = localStorage.getItem("carts") == null ? [] : JSON.parse(localStorage.getItem("carts")!);
+      const existingCartItem = carts.find((item: any) => item.product.product_id === productId);
+      if (existingCartItem) {
+        // If the product exists, increment the amount
+        existingCartItem.amount += amount;
+        existingCartItem.update_datetime = Date.now();
+      } else {
+        const product = await getProductById(productId);
+        const cart = {
+          cart_id: getUUID(),
+          amount,
+          create_datetime: Date.now,
+          update_datetime: Date.now,
+          product,
+        };
+        carts.push(cart);
+      }
+      localStorage.setItem("carts", JSON.stringify(carts));
     }
   } catch (error: any) {
     if (error.message !== undefined) {
       open(ErrorStrToEum(error.message), ErrorMsg.Error);
     }
+  } finally {
+    open("加入購物車" + GeneralMsg.Success, undefined);
   }
 };
 
