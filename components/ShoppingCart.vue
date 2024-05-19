@@ -1,7 +1,14 @@
 <template>
   <div class="product-container">
     <div v-for="cart in shoppingCart" :key="cart.cart_id" style="border-style: double" class="product-card">
-      <p>產品名稱: {{ cart.product.product_name }}</p>
+      <div v-if="cart.product.mediaUrls" class="image-container">
+        <div v-for="mediaUrl in cart.product.mediaUrls" :key="mediaUrl">
+          <img :src="mediaUrl" alt="Product Image" class="product-image" />
+        </div>
+      </div>
+      <p>
+        <NuxtLink :to="'/productpage?product_id=' + cart.product.product_id">產品名稱: {{ cart.product.product_name }}</NuxtLink>
+      </p>
       <p>單價: {{ cart.product.price }}</p>
       <div class="quantity-container">
         <label for="quantity">數量:</label>
@@ -38,6 +45,7 @@ import { onMounted, ref, computed } from "vue";
 import { getMember } from "~/server/services/memberService";
 import { getMemberCart, updateProductAmount, deleteCart, cleanupCart } from "~/server/services/cartService";
 import { ShoppingCart } from "~/models/ShoppingCartModel";
+import { convertBuffer, getProductMediaByProductId } from "~/server/services/productService";
 
 const shoppingCart = ref<ShoppingCart[]>([]); // Initialize as empty array
 const memberId = getMember()?.member_id;
@@ -57,6 +65,13 @@ const getCart = async () => {
     const parsedData: any[] = JSON.parse(storageData);
     parsedData.map((item: any) => new ShoppingCart(item));
     shoppingCart.value = parsedData;
+  }
+  for (const cart of shoppingCart.value) {
+    const mediaList = await getProductMediaByProductId(cart.product.product_id);
+    if (mediaList.length > 0) {
+      const mediaUrls = convertBuffer(mediaList); // Assuming media_buffer is in the response
+      cart.product.mediaUrls = mediaUrls;
+    }
   }
 };
 

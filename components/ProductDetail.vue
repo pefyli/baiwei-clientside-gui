@@ -6,6 +6,11 @@
       <p>產品描述: {{ product.product_description }}</p>
       <p>產品價格: {{ product.price }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>
+      <div v-if="product.mediaUrls" class="image-container">
+        <div v-for="mediaUrl in product.mediaUrls" :key="mediaUrl">
+          <img :src="mediaUrl" alt="Product Image" class="product-image" />
+        </div>
+      </div>
       <div class="quantity-container">
         <label for="quantity">數量:</label>
         <div class="input-group">
@@ -27,13 +32,14 @@
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { ElMessageBox, type Action, ElMessage } from "element-plus";
-import { getProductById } from "~/server/services/productService";
+import { convertBuffer, getProductById, getProductMediaByProductId } from "~/server/services/productService";
 import type { Product } from "~/models/ProductModel";
 import { getMember } from "~/server/services/memberService";
 import { addToCart } from "~/server/services/cartService";
 import { ErrorStrToEum, ErrorMsg } from "~/models/ErrorMsg";
 import { GeneralMsg } from "~/models/GeneralMsg";
 import { getUUID } from "~/server/services/utilService";
+import type { Media } from "~/models/MediaModel";
 
 const router = useRouter();
 
@@ -98,7 +104,17 @@ const open = (message: string, title?: string) => {
 };
 
 const fetchProduct = async (productId: number) => {
-  product.value = await getProductById(productId);
+  const productInfo = await getProductById(productId);
+  let mediaList = await getMediaByProduct(productId);
+  mediaList = mediaList.filter((media) => media.display_location === 0);
+  if (mediaList.length > 0) {
+    productInfo.mediaUrls = convertBuffer(mediaList);
+  }
+  product.value = productInfo;
+};
+
+const getMediaByProduct = async (productId: number): Promise<Media[]> => {
+  return await getProductMediaByProductId(productId);
 };
 
 const incrementQuantity = () => {

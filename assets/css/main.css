@@ -21,7 +21,24 @@ input {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust column width as needed */
     grid-gap: 20px; /* Adjust the gap between product cards */
-  }
+}
+
+.image-container {
+    width: 200px; /* Set the desired width */
+    height: 200px; /* Set the desired height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Hide overflow content */
+    margin: 0 auto; /* Center the container itself if needed */
+}
+  
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the container */
+    margin-bottom: 35px;
+}
   
 .product-card {
     border: 2px double #000; /* You can adjust the border style */
