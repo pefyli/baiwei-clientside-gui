@@ -2,14 +2,16 @@
   <div class="product-container">
     <!-- Display search results here -->
     <div v-if="product" style="border-style: double" class="product-card">
-      <p>產品名稱: {{ product.product_name }}</p>
-      <p>產品描述: {{ product.product_description }}</p>
+      <p>{{ product.product_name }}</p>
+      <p>商品描述: {{ product.product_description }}</p>
       <p>產品價格: {{ product.price }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>
-      <div v-if="product.mediaUrls" class="image-container">
-        <div v-for="mediaUrl in product.mediaUrls" :key="mediaUrl">
-          <img :src="mediaUrl" alt="Product Image" class="product-image" />
-        </div>
+      <div class="block text-center" m="t-4">
+        <el-carousel trigger="click" height="400px">
+          <el-carousel-item v-for="(mediaUrl, index) in product.mediaUrls" :key="index">
+            <img :src="mediaUrl" alt="Product Image" class="product-image" />
+          </el-carousel-item>
+        </el-carousel>
       </div>
       <div class="quantity-container">
         <label for="quantity">數量:</label>
@@ -39,7 +41,6 @@ import { addToCart } from "~/server/services/cartService";
 import { ErrorStrToEum, ErrorMsg } from "~/models/ErrorMsg";
 import { GeneralMsg } from "~/models/GeneralMsg";
 import { getUUID } from "~/server/services/utilService";
-import type { Media } from "~/models/MediaModel";
 
 const router = useRouter();
 
@@ -105,16 +106,11 @@ const open = (message: string, title?: string) => {
 
 const fetchProduct = async (productId: number) => {
   const productInfo = await getProductById(productId);
-  let mediaList = await getMediaByProduct(productId);
-  mediaList = mediaList.filter((media) => media.display_location === 0);
+  const mediaList = await getProductMediaByProductId(productId);
   if (mediaList.length > 0) {
     productInfo.mediaUrls = convertBuffer(mediaList);
   }
   product.value = productInfo;
-};
-
-const getMediaByProduct = async (productId: number): Promise<Media[]> => {
-  return await getProductMediaByProductId(productId);
 };
 
 const incrementQuantity = () => {

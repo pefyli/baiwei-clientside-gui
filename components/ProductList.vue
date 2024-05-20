@@ -18,7 +18,7 @@
   <br /><br />
   <div class="product-container">
     <div v-for="product in sortedProductList" :key="product.product_id" style="border-style: double" class="product-card">
-      <p>產品名稱: {{ product.product_name }}</p>
+      <p>{{ product.product_name }}</p>
       <p>產品價格: {{ product.price }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>
       <div v-if="product.mediaUrls" class="image-container">
@@ -39,7 +39,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from "vue";
-import type { Media } from "~/models/MediaModel";
 import type { Product } from "~/models/ProductModel";
 import { getProducts, getProductMediaByProductId, convertBuffer } from "~/server/services/productService";
 
@@ -67,7 +66,7 @@ onMounted(async () => {
 const fetchProductList = async () => {
   const products = await getProducts();
   for (const product of products) {
-    let mediaList = await getMediaByProduct(product.product_id);
+    let mediaList = await getProductMediaByProductId(product.product_id);
     mediaList = mediaList.filter((media) => media.display_location === 0);
     if (mediaList.length > 0) {
       product.mediaUrls = convertBuffer(mediaList);
@@ -103,8 +102,4 @@ const sortedProductList = computed(() => {
 
   return sortedProducts;
 });
-
-const getMediaByProduct = async (productId: number): Promise<Media[]> => {
-  return await getProductMediaByProductId(productId);
-};
 </script>

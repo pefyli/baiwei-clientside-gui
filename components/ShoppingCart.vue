@@ -2,12 +2,12 @@
   <div class="product-container">
     <div v-for="cart in shoppingCart" :key="cart.cart_id" style="border-style: double" class="product-card">
       <div v-if="cart.product.mediaUrls" class="image-container">
-        <div v-for="mediaUrl in cart.product.mediaUrls" :key="mediaUrl">
+        <div v-for="(mediaUrl, index) in cart.product.mediaUrls" :key="index">
           <img :src="mediaUrl" alt="Product Image" class="product-image" />
         </div>
       </div>
       <p>
-        <NuxtLink :to="'/productpage?product_id=' + cart.product.product_id">產品名稱: {{ cart.product.product_name }}</NuxtLink>
+        <NuxtLink :to="'/productpage?product_id=' + cart.product.product_id">{{ cart.product.product_name }}</NuxtLink>
       </p>
       <p>單價: {{ cart.product.price }}</p>
       <div class="quantity-container">
@@ -18,7 +18,8 @@
           <button @click="incrementQuantity(cart)">+</button>
         </div>
       </div>
-      <p>金額: {{ cart.product.price * cart.amount }}</p>
+      <br /><br />
+      <p>目前金額: {{ cart.product.price * cart.amount }}</p>
       <div class="button-container">
         <div>
           <el-button class="product-button" @click="deleteProductFromCart(cart.cart_id)">移除</el-button>
@@ -67,7 +68,8 @@ const getCart = async () => {
     shoppingCart.value = parsedData;
   }
   for (const cart of shoppingCart.value) {
-    const mediaList = await getProductMediaByProductId(cart.product.product_id);
+    let mediaList = await getProductMediaByProductId(cart.product.product_id);
+    mediaList = mediaList.filter((media) => media.display_location === 0);
     if (mediaList.length > 0) {
       const mediaUrls = convertBuffer(mediaList); // Assuming media_buffer is in the response
       cart.product.mediaUrls = mediaUrls;
@@ -78,14 +80,18 @@ const getCart = async () => {
 const incrementQuantity = async (cart: ShoppingCart) => {
   if (cart.amount < cart.product.inventory_quantity) {
     cart.amount++;
-    await updateProductAmount(cart);
+    if (memberId) {
+      await updateProductAmount(cart);
+    }
   }
 };
 
 const decrementQuantity = async (cart: ShoppingCart) => {
   if (cart.amount > 1) {
     cart.amount--;
-    await updateProductAmount(cart);
+    if (memberId) {
+      await updateProductAmount(cart);
+    }
   }
 };
 
