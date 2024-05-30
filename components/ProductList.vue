@@ -17,7 +17,7 @@
   </div>
   <br /><br />
   <div class="product-container">
-    <div v-for="product in sortedProductList" :key="product.product_id" style="border-style: double" class="product-card">
+    <div v-for="product in sortedProductList" :key="product.product_id" class="product-card">
       <p>{{ product.product_name }}</p>
       <p>產品價格: {{ product.price }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>

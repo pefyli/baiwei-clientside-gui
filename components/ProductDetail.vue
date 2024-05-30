@@ -1,31 +1,34 @@
 <template>
-  <div class="product-container">
+  <div class="product-detail-container">
     <!-- Display search results here -->
-    <div v-if="product" style="border-style: double" class="product-card">
-      <p>{{ product.product_name }}</p>
-      <p>商品描述: {{ product.product_description }}</p>
-      <p>產品價格: {{ product.price }}</p>
-      <p>庫存量: {{ product.inventory_quantity }}</p>
-      <div class="block text-center" m="t-4">
+    <div v-if="product" class="product-detail-card">
+      <div class="product-image-container">
         <el-carousel trigger="click" height="400px">
           <el-carousel-item v-for="(mediaUrl, index) in product.mediaUrls" :key="index">
             <img :src="mediaUrl" alt="Product Image" class="product-image" />
           </el-carousel-item>
         </el-carousel>
       </div>
-      <div class="quantity-container">
-        <label for="quantity">數量:</label>
-        <div class="input-group">
-          <button @click="decrementQuantity">-</button>
-          <span>{{ quantity }}</span>
-          <button @click="incrementQuantity">+</button>
+      <div class="product-info-container">
+        <p>{{ product.product_name }}</p>
+        <p>商品描述: {{ product.product_description }}</p>
+        <p>產品價格: {{ product.price }}</p>
+        <p>庫存量: {{ product.inventory_quantity }}</p>
+        <div class="quantity-container">
+          <label for="quantity">數量:</label>
+          <div class="input-group">
+            <button @click="decrementQuantity">-</button>
+            <span>{{ quantity }}</span>
+            <button @click="incrementQuantity">+</button>
+          </div>
         </div>
-      </div>
-      <div class="button-container">
-        <div>
-          <el-button class="product-button" @click="product && addProductToCart(product.product_id, quantity)"> 加入購物車 </el-button>
+        <br /><br /><br /><br />
+        <div class="button-container">
+          <div>
+            <el-button class="product-button" @click="product && addProductToCart(product.product_id, quantity)"> 加入購物車 </el-button>
+          </div>
+          <el-button class="product-button"> 立即結帳 </el-button>
         </div>
-        <el-button class="product-button"> 立即結帳 </el-button>
       </div>
     </div>
   </div>
@@ -127,6 +130,30 @@ const decrementQuantity = () => {
 </script>
 
 <style scoped>
+.product-detail-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh; /* Full viewport height */
+  padding: 20px; /* Optional: add some padding */
+  box-sizing: border-box; /* Ensure padding does not affect the size */
+}
+.product-detail-card {
+  display: flex;
+  max-width: 1000px; /* Max width of the card */
+  width: 100%; /* Full width up to the max width */
+  padding: 20px; /* Padding inside the card */
+  background-color: #fff; /* Background color of the card */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: add some shadow for better appearance */
+}
+.product-image-container {
+  flex: 1; /* Take up equal space */
+  margin-right: 20px; /* Space between image and info */
+}
+.product-info-container {
+  flex: 1; /* Take up equal space */
+}
 .quantity-container {
   margin-top: 10px;
 }
@@ -135,7 +162,7 @@ const decrementQuantity = () => {
   align-items: center;
 }
 .input-group button {
-  background-color: #0d0d0d(190 59% 39%);
+  background-color: #d3d3d3;
   color: rgb(39, 38, 38);
   border: none;
   cursor: pointer;

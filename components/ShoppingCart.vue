@@ -29,6 +29,12 @@
 
     <div>
       <div>
+        <div v-if="!shoppingCart.length" class="empty-cart-message-container">
+          <div class="empty-cart-message">你的購物車目前還是空的</div>
+          <el-button><NuxtLink to="/" class="continue-shopping-button">去血拚</NuxtLink></el-button>
+        </div>
+      </div>
+      <div>
         <el-button v-if="shoppingCart.length" class="cleanup-button" @click="cleanupShoppingCart">清空購物車</el-button>
       </div>
       <div style="margin-left: 80px">
@@ -160,5 +166,22 @@ const cleanupShoppingCart = async () => {
   position: fixed; /* Fix the total container */
   bottom: 10px; /* Adjust bottom spacing */
   right: calc(5px + 270px); /* Adjust right spacing */
+}
+.empty-cart-message-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.empty-cart-message {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+.continue-shopping-button {
+  /* Remove underline */
+  text-decoration: none;
+  /* Change color */
+  color: #333; /* Change it to your desired color */
 }
 </style>
