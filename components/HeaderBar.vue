@@ -1,32 +1,34 @@
 <template>
   <div class="menu-container">
     <el-menu mode="horizontal" class="custom-menu">
-      <el-menu-item>幫助中心</el-menu-item>
-      <el-menu-item v-if="isLoggedIn" class="el-right">
-        <NuxtLink to="/membercenter"> 會員中心 </NuxtLink>
-      </el-menu-item>
-      <el-menu-item v-if="!isLoggedIn">
-        <NuxtLink to="/register"> 註冊 </NuxtLink>
-      </el-menu-item>
-      <el-menu-item v-if="!isLoggedIn">
-        <NuxtLink to="/login"> 登入 </NuxtLink>
-      </el-menu-item>
-      <el-menu-item>
-        <NuxtLink to="/"> 首頁 </NuxtLink>
-      </el-menu-item>
-      <el-menu-item>
-        <p v-if="isLoggedIn">{{ member?.member_name }}，您好</p>
-      </el-menu-item>
-      <el-menu-item>
-        <el-button v-if="isLoggedIn" round @click="logout"> 登出 </el-button>
-      </el-menu-item>
-      <el-menu-item>
-        <input v-model="searchTerm" type="text" /> &nbsp;
-        <el-button @click="performSearch">搜尋</el-button>
-      </el-menu-item>
-      <el-menu-item>
-        <NuxtLink to="/shoppingcart"> 購物車 </NuxtLink>
-      </el-menu-item>
+      <div class="menu-items">
+        <el-menu-item>幫助中心</el-menu-item>
+        <el-menu-item v-if="isLoggedIn" class="el-right">
+          <NuxtLink to="/membercenter"> 會員中心 </NuxtLink>
+        </el-menu-item>
+        <el-menu-item v-if="!isLoggedIn">
+          <NuxtLink to="/register"> 註冊 </NuxtLink>
+        </el-menu-item>
+        <el-menu-item v-if="!isLoggedIn">
+          <NuxtLink to="/login"> 登入 </NuxtLink>
+        </el-menu-item>
+        <el-menu-item>
+          <NuxtLink to="/"> 首頁 </NuxtLink>
+        </el-menu-item>
+        <el-menu-item>
+          <p v-if="isLoggedIn">{{ member?.member_name }}，您好</p>
+        </el-menu-item>
+        <el-menu-item>
+          <el-button v-if="isLoggedIn" round @click="logout"> 登出 </el-button>
+        </el-menu-item>
+        <el-menu-item>
+          <input v-model="searchTerm" type="text" /> &nbsp;
+          <el-button @click="performSearch">搜尋</el-button>
+        </el-menu-item>
+        <el-menu-item>
+          <NuxtLink to="/shoppingcart"> 購物車 </NuxtLink>
+        </el-menu-item>
+      </div>
       <el-menu-item class="custom-menu-item icon-container">
         <NuxtImg src="/icon.jpg" class="icon-image" />
       </el-menu-item>
@@ -95,6 +97,12 @@ const open = (message: string, title?: string) => {
   display: flex;
   flex-wrap: nowrap; /* Prevent items from wrapping */
   white-space: nowrap; /* Prevent text wrapping */
+  justify-content: space-between; /* Ensure the icon stays on the right */
+}
+
+.menu-items {
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .icon-image {
@@ -105,6 +113,11 @@ const open = (message: string, title?: string) => {
 @media (max-width: 768px) {
   .custom-menu {
     flex-direction: column;
+  }
+
+  .menu-items {
+    flex-direction: row;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
   }
 
   .el-right {

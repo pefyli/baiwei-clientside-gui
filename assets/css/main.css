@@ -70,3 +70,6 @@ input {
     justify-content: flex-end; /* Align buttons to the end of the container */
 }
 
+a {
+    text-decoration: none;
+}

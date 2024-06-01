@@ -179,8 +179,6 @@ const cleanupShoppingCart = async () => {
   margin-bottom: 20px;
 }
 .continue-shopping-button {
-  /* Remove underline */
-  text-decoration: none;
   /* Change color */
   color: #333; /* Change it to your desired color */
 }
