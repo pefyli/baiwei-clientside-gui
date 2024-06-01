@@ -1,31 +1,34 @@
 <template>
-  <div>
-    <el-menu mode="horizontal">
-      <el-menu-item class="el-right"> 幫助中心 </el-menu-item>
+  <div class="menu-container">
+    <el-menu mode="horizontal" class="custom-menu">
+      <el-menu-item>幫助中心</el-menu-item>
       <el-menu-item v-if="isLoggedIn" class="el-right">
         <NuxtLink to="/membercenter"> 會員中心 </NuxtLink>
       </el-menu-item>
-      <el-menu-item v-if="!isLoggedIn" class="el-right">
+      <el-menu-item v-if="!isLoggedIn">
         <NuxtLink to="/register"> 註冊 </NuxtLink>
       </el-menu-item>
-      <el-menu-item v-if="!isLoggedIn" class="el-right">
+      <el-menu-item v-if="!isLoggedIn">
         <NuxtLink to="/login"> 登入 </NuxtLink>
       </el-menu-item>
-      <el-menu-item class="el-right">
+      <el-menu-item>
         <NuxtLink to="/"> 首頁 </NuxtLink>
       </el-menu-item>
-      <el-menu-item class="el-menu-custom">
+      <el-menu-item>
         <p v-if="isLoggedIn">{{ member?.member_name }}，您好</p>
       </el-menu-item>
-      <el-menu-item class="el-menu-custom">
+      <el-menu-item>
         <el-button v-if="isLoggedIn" round @click="logout"> 登出 </el-button>
       </el-menu-item>
-      <el-menu-item class="el-menu-custom">
+      <el-menu-item>
         <input v-model="searchTerm" type="text" /> &nbsp;
         <el-button @click="performSearch">搜尋</el-button>
       </el-menu-item>
-      <el-menu-item class="el-right">
+      <el-menu-item>
         <NuxtLink to="/shoppingcart"> 購物車 </NuxtLink>
+      </el-menu-item>
+      <el-menu-item class="custom-menu-item icon-container">
+        <NuxtImg src="/icon.jpg" class="icon-image" />
       </el-menu-item>
     </el-menu>
   </div>
@@ -82,18 +85,30 @@ const open = (message: string, title?: string) => {
   });
 };
 </script>
+
 <style scoped>
-.el-right {
-  float: right;
+.menu-container {
+  overflow-x: auto; /* Allow horizontal scrolling if items overflow */
 }
 
-/* Override hover effect for the elmenu item */
-.el-menu-custom,
-.el-menu-custom:hover,
-.el-menu-custom:focus,
-.el-menu-custom:active {
-  background-color: transparent !important; /* Set the background color to transparent */
-  color: inherit !important; /* Inherit the color */
-  border-color: transparent !important; /* Set border color to transparent */
+.custom-menu {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent items from wrapping */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.icon-image {
+  height: 50px; /* Adjust the height as needed */
+  width: 50px; /* Adjust the width as needed */
+}
+
+@media (max-width: 768px) {
+  .custom-menu {
+    flex-direction: column;
+  }
+
+  .el-right {
+    margin-left: 0;
+  }
 }
 </style>

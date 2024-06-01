@@ -28,6 +28,7 @@ import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox, type Action } from "element-plus";
 import { GeneralMsg } from "~/models/GeneralMsg";
 import { register } from "~/server/services/memberService";
+import { ErrorMsg, ErrorStrToEum } from "~/models/ErrorMsg";
 
 const router = useRouter();
 
@@ -63,15 +64,21 @@ const open = (message: string, title?: string) => {
 };
 
 const onSubmit = async () => {
-  const isValid = await registerFormValidation.value?.validate();
-  if (isValid) {
-    const res = await register(JSON.stringify(registrationForm));
-    if (res) {
-      open("註冊" + GeneralMsg.Success, undefined);
-      router.push("/login");
+  try {
+    const isValid = await registerFormValidation.value?.validate();
+    if (isValid) {
+      const res = await register(JSON.stringify(registrationForm));
+      if (res) {
+        open("註冊" + GeneralMsg.Success, undefined);
+        router.push("/login");
+      }
+    } else {
+      return false;
     }
-  } else {
-    return false;
+  } catch (error: any) {
+    if (error.message !== undefined) {
+      open(ErrorStrToEum(error.message), ErrorMsg.Error);
+    }
   }
 };
 

@@ -31,7 +31,7 @@
       <div>
         <div v-if="!shoppingCart.length" class="empty-cart-message-container">
           <div class="empty-cart-message">你的購物車目前還是空的</div>
-          <el-button><NuxtLink to="/" class="continue-shopping-button">去血拚</NuxtLink></el-button>
+          <NuxtLink to="/" class="continue-shopping-button"><el-button>去血拚</el-button></NuxtLink>
         </div>
       </div>
       <div>
