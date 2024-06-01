@@ -15,10 +15,10 @@
         <el-menu-item>
           <NuxtLink to="/"> 首頁 </NuxtLink>
         </el-menu-item>
-        <el-menu-item>
+        <el-menu-item v-if="isLoggedIn">
           <p v-if="isLoggedIn">{{ member?.member_name }}，您好</p>
         </el-menu-item>
-        <el-menu-item>
+        <el-menu-item v-if="isLoggedIn">
           <el-button v-if="isLoggedIn" round @click="logout"> 登出 </el-button>
         </el-menu-item>
         <el-menu-item>
@@ -29,9 +29,9 @@
           <NuxtLink to="/shoppingcart"> 購物車 </NuxtLink>
         </el-menu-item>
       </div>
-      <el-menu-item class="custom-menu-item icon-container">
+      <div class="icon-container">
         <NuxtImg src="/icon.jpg" class="icon-image" />
-      </el-menu-item>
+      </div>
     </el-menu>
   </div>
 </template>
@@ -95,9 +95,10 @@ const open = (message: string, title?: string) => {
 
 .custom-menu {
   display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensure the icon stays on the right */
   flex-wrap: nowrap; /* Prevent items from wrapping */
   white-space: nowrap; /* Prevent text wrapping */
-  justify-content: space-between; /* Ensure the icon stays on the right */
 }
 
 .menu-items {
@@ -105,23 +106,20 @@ const open = (message: string, title?: string) => {
   flex-wrap: nowrap;
 }
 
+.icon-container {
+  margin-right: 20px;
+  flex-shrink: 0; /* Prevent the icon container from shrinking */
+}
+
 .icon-image {
   height: 50px; /* Adjust the height as needed */
   width: 50px; /* Adjust the width as needed */
 }
 
-@media (max-width: 768px) {
-  .custom-menu {
-    flex-direction: column;
-  }
-
-  .menu-items {
-    flex-direction: row;
-    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
-  }
-
-  .el-right {
-    margin-left: 0;
+@media (max-width: 1000px) {
+  .icon-container,
+  .icon-image {
+    display: none;
   }
 }
 </style>

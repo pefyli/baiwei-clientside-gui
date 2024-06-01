@@ -35,13 +35,15 @@
         </div>
       </div>
       <div>
-        <el-button v-if="shoppingCart.length" class="cleanup-button" @click="cleanupShoppingCart">清空購物車</el-button>
-      </div>
-      <div style="margin-left: 80px">
-        <el-button v-if="shoppingCart.length" class="payment-button">結帳</el-button>
-      </div>
-      <div>
-        <p v-if="shoppingCart.length" class="total-container">總計: {{ calculateTotal }}</p>
+        <div>
+          <el-button v-if="shoppingCart.length" class="cleanup-button" @click="cleanupShoppingCart">清空購物車</el-button>
+        </div>
+        <div style="margin-left: 80px">
+          <el-button v-if="shoppingCart.length" class="payment-button">結帳</el-button>
+        </div>
+        <div>
+          <p v-if="shoppingCart.length" class="total-container">總計: {{ calculateTotal }}</p>
+        </div>
       </div>
     </div>
   </div>

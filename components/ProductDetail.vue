@@ -11,7 +11,6 @@
       </div>
       <div class="product-info-container">
         <p>{{ product.product_name }}</p>
-        <p>商品描述: {{ product.product_description }}</p>
         <p>產品價格: {{ product.price }}</p>
         <p>庫存量: {{ product.inventory_quantity }}</p>
         <div class="quantity-container">
@@ -22,17 +21,21 @@
             <button @click="incrementQuantity">+</button>
           </div>
         </div>
-        <br /><br /><br /><br />
         <div class="button-container">
-          <div>
-            <el-button class="product-button" @click="product && addProductToCart(product.product_id, quantity)"> 加入購物車 </el-button>
-          </div>
+          <el-button class="product-button" @click="product && addProductToCart(product.product_id, quantity)"> 加入購物車 </el-button>
           <el-button class="product-button"> 立即結帳 </el-button>
         </div>
       </div>
     </div>
+    <div v-if="product" class="product-detail-card">
+      <p>
+        商品描述:<br /><br />
+        {{ product.product_description }}
+      </p>
+    </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
@@ -132,35 +135,53 @@ const decrementQuantity = () => {
 <style scoped>
 .product-detail-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh; /* Full viewport height */
-  padding: 20px; /* Optional: add some padding */
-  box-sizing: border-box; /* Ensure padding does not affect the size */
+  padding: 20px;
+  box-sizing: border-box;
 }
+
 .product-detail-card {
   display: flex;
-  max-width: 1000px; /* Max width of the card */
-  width: 100%; /* Full width up to the max width */
-  padding: 20px; /* Padding inside the card */
-  background-color: #fff; /* Background color of the card */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: add some shadow for better appearance */
+  flex-direction: column;
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
+
 .product-image-container {
-  flex: 1; /* Take up equal space */
-  margin-right: 20px; /* Space between image and info */
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 20px;
 }
+
+.product-image {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
 .product-info-container {
-  flex: 1; /* Take up equal space */
+  flex: 1;
 }
+
 .quantity-container {
   margin-top: 10px;
 }
+
 .input-group {
   display: flex;
   align-items: center;
 }
+
 .input-group button {
   background-color: #d3d3d3;
   color: rgb(39, 38, 38);
@@ -168,7 +189,41 @@ const decrementQuantity = () => {
   cursor: pointer;
   padding: 5px 10px;
 }
+
 .input-group span {
   margin: 0 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.product-button {
+  margin-top: 0;
+}
+
+/* Media queries for responsive design */
+@media (min-width: 768px) {
+  .product-detail-card {
+    flex-direction: row;
+  }
+
+  .product-image-container {
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .product-detail-card {
+    flex-direction: column;
+  }
+
+  .product-image-container {
+    margin-right: 0;
+  }
 }
 </style>
