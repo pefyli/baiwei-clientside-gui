@@ -29,8 +29,8 @@
     </div>
     <div v-if="product" class="product-detail-card">
       <p>
-        商品描述:<br /><br />
-        {{ product.product_description }}
+        <b>商品描述:</b><br /><br />
+        <span class="product-description">{{ product.product_description }}</span>
       </p>
     </div>
   </div>
@@ -203,6 +203,10 @@ const decrementQuantity = () => {
 
 .product-button {
   margin-top: 0;
+}
+
+.product-description {
+  white-space: pre-wrap;
 }
 
 /* Media queries for responsive design */
