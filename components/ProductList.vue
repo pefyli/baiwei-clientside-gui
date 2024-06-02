@@ -11,23 +11,27 @@
     <!-- Order by Price -->
     <select v-model="orderByPrice">
       <option value="" disabled>請選擇價格排序方式</option>
-      <option value="orderByPriceAsc">價格由低到高</option>
-      <option value="orderByPriceDesc">價格由高到低</option>
+      <option value="orderByPriceAsc">價格由高到低</option>
+      <option value="orderByPriceDesc">價格由低到高</option>
     </select>
   </div>
   <br /><br />
   <div class="product-container">
-    <div v-for="product in sortedProductList" :key="product.product_id" style="border-style: double" class="product-card">
-      <p>產品名稱: {{ product.product_name }}</p>
+    <div v-for="product in sortedProductList" :key="product.product_id" class="product-card">
+      <p>{{ product.product_name }}</p>
       <p>產品價格: {{ product.price }}</p>
       <p>庫存量: {{ product.inventory_quantity }}</p>
+      <div v-if="product.mediaUrls" class="image-container">
+        <div v-for="mediaUrl in product.mediaUrls" :key="mediaUrl">
+          <img :src="mediaUrl" alt="Product Image" class="product-image" />
+        </div>
+      </div>
       <div class="button-container">
         <div>
           <NuxtLink :to="'/productpage?product_id=' + product.product_id">
             <el-button class="product-button">立即購買</el-button>
           </NuxtLink>
         </div>
-        <el-button class="product-button"> 加入購物車 </el-button>
       </div>
     </div>
   </div>
@@ -36,7 +40,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from "vue";
 import type { Product } from "~/models/ProductModel";
-import { getProducts } from "~/server/services/productService";
+import { getProducts, getProductMediaByProductId, convertBuffer } from "~/server/services/productService";
 
 const productList = ref<Product[]>([]); // Initialize as empty array
 const orderByTime = ref(""); // Default order by time
@@ -60,7 +64,15 @@ onMounted(async () => {
 });
 
 const fetchProductList = async () => {
-  productList.value = await getProducts();
+  const products = await getProducts();
+  for (const product of products) {
+    let mediaList = await getProductMediaByProductId(product.product_id);
+    mediaList = mediaList.filter((media) => media.display_location === 0);
+    if (mediaList.length > 0) {
+      product.mediaUrls = convertBuffer(mediaList);
+    }
+  }
+  productList.value = products;
 };
 
 const sortedProductList = computed(() => {

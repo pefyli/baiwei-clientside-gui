@@ -5,6 +5,7 @@ export class Product {
   price: number;
   product_description: string;
   inventory_quantity: number;
+  mediaUrls: string[];
   create_datetime: string;
   update_datetime: string;
 
@@ -17,5 +18,6 @@ export class Product {
     this.inventory_quantity = data.inventory_quantity;
     this.create_datetime = data.create_datetime;
     this.update_datetime = data.update_datetime;
+    this.mediaUrls = data.mediaUrls;
   }
 }

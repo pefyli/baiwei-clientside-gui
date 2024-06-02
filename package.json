@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.7",
+    "@nuxt/image": "^1.7.0",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@pinia/nuxt": "^0.5.1",
     "element-plus": "^2.5.6",
