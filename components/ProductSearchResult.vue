@@ -4,8 +4,6 @@
   <div class="product-container">
     <div v-for="product in searchResult" :key="product.product_id" style="border-style: double" class="product-card">
       <p>{{ product.product_name }}</p>
-      <p>{{ product.price }}</p>
-      <p>庫存量: {{ product.inventory_quantity }}</p>
       <div v-if="product.mediaUrls" class="image-container">
         <div v-for="mediaUrl in product.mediaUrls" :key="mediaUrl">
           <img :src="mediaUrl" alt="Product Image" class="product-image" />

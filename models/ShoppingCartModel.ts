@@ -1,4 +1,4 @@
-import type { Product } from "./ProductModel";
+import type { Item } from "./ItemModel";
 
 export class ShoppingCart {
   member_id?: number;
@@ -6,14 +6,14 @@ export class ShoppingCart {
   amount: number;
   create_datetime: string;
   update_datetime: string;
-  product: Product;
+  item: Item;
 
   constructor(data: any) {
-    this.cart_id = data.cart_id;
     this.member_id = data.member_id;
+    this.cart_id = data.cart_id;
     this.amount = data.amount;
     this.create_datetime = data.create_datetime;
     this.update_datetime = data.update_datetime;
-    this.product = data.product;
+    this.item = data.item;
   }
 }

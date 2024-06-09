@@ -1,9 +1,9 @@
 import { ShoppingCart } from "~/models/ShoppingCartModel";
 
-export async function addToCart(memberId: number, productId: number, amount: number) {
+export async function addToCart(memberId: number, productId: number, itemId: number, amount: number) {
   const response: any = await $fetch("/api/cart", {
     onRequest({ options }) {
-      options.body = { member_id: memberId, product_id: productId, amount };
+      options.body = { member_id: memberId, product_id: productId, item_id: itemId, amount };
       options.method = "POST";
     },
     onRequestError({ error }) {
@@ -33,7 +33,7 @@ export async function getMemberCart(memberId: number): Promise<ShoppingCart[]> {
 export async function updateProductAmount(cart: ShoppingCart) {
   const response: any = await $fetch("/api/cart/" + cart.cart_id, {
     onRequest({ options }) {
-      options.body = { member_id: cart.member_id, product_id: cart.product.product_id, amount: cart.amount };
+      options.body = { member_id: cart.member_id, product_id: cart.product.product_id, amount: cart.item.quantity };
       options.method = "PUT";
     },
     onRequestError({ error }) {
