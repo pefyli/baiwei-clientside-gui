@@ -1,15 +1,16 @@
 <template>
   <div class="product-container">
     <div v-for="cart in shoppingCart" :key="cart.cart_id" style="border-style: double" class="product-card">
-      <div v-if="cart.product.mediaUrls" class="image-container">
-        <div v-for="(mediaUrl, index) in cart.product.mediaUrls" :key="index">
+      <div v-if="mediaUrls" class="image-container">
+        <div v-for="(mediaUrl, index) in mediaUrls[cart.item.product_id]" :key="index">
           <img :src="mediaUrl" alt="Product Image" class="product-image" />
         </div>
       </div>
       <p>
-        <NuxtLink :to="'/productpage?product_id=' + cart.product.product_id">{{ cart.product.product_name }}</NuxtLink>
+        <NuxtLink :to="'/productpage?product_id=' + cart.item.product_id">{{ cart.item.product_name }}</NuxtLink>
       </p>
-      <p>單價: {{ cart.product.price }}</p>
+      <p>單價: {{ cart.item.price }}</p>
+      <p>顏色: {{ cart.item.color }}</p>
       <div class="quantity-container">
         <label for="quantity">數量:</label>
         <div class="input-group">
@@ -19,7 +20,7 @@
         </div>
       </div>
       <br /><br />
-      <p>目前金額: {{ cart.product.price * cart.amount }}</p>
+      <p>目前金額: {{ cart.item.price * cart.amount }}</p>
       <div class="button-container">
         <div>
           <el-button class="product-button" @click="deleteProductFromCart(cart.cart_id)">移除</el-button>
@@ -52,11 +53,12 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import { getMember } from "~/server/services/memberService";
-import { getMemberCart, updateProductAmount, deleteCart, cleanupCart } from "~/server/services/cartService";
+import { getMemberCart, updateItemAmount, deleteCart, cleanupCart } from "~/server/services/cartService";
 import { ShoppingCart } from "~/models/ShoppingCartModel";
-import { convertBuffer, getProductMediaByProductId } from "~/server/services/productService";
+import { convertBuffer, getProductById, getProductMediaByProductId } from "~/server/services/productService";
 
 const shoppingCart = ref<ShoppingCart[]>([]); // Initialize as empty array
+const mediaUrls = ref<{ [key: number]: string[] }>({}); // Initialize as empty array
 const memberId = getMember()?.member_id;
 
 onMounted(async () => {
@@ -75,21 +77,23 @@ const getCart = async () => {
     parsedData.map((item: any) => new ShoppingCart(item));
     shoppingCart.value = parsedData;
   }
+
   for (const cart of shoppingCart.value) {
-    let mediaList = await getProductMediaByProductId(cart.product.product_id);
+    const product = await getProductById(cart.item.product_id);
+    cart.item.product_name = product.product_name;
+    let mediaList = await getProductMediaByProductId(cart.item.product_id);
     mediaList = mediaList.filter((media) => media.display_location === 0);
     if (mediaList.length > 0) {
-      const mediaUrls = convertBuffer(mediaList); // Assuming media_buffer is in the response
-      cart.product.mediaUrls = mediaUrls;
+      mediaUrls.value[cart.item.product_id] = convertBuffer(mediaList); // Assuming media_buffer is in the response
     }
   }
 };
 
 const incrementQuantity = async (cart: ShoppingCart) => {
-  if (cart.amount < cart.product.inventory_quantity) {
+  if (cart.amount < cart.item.quantity) {
     cart.amount++;
     if (memberId) {
-      await updateProductAmount(cart);
+      await updateItemAmount(cart);
     }
   }
 };
@@ -98,14 +102,15 @@ const decrementQuantity = async (cart: ShoppingCart) => {
   if (cart.amount > 1) {
     cart.amount--;
     if (memberId) {
-      await updateProductAmount(cart);
+      console.log(cart);
+      await updateItemAmount(cart);
     }
   }
 };
 
 const calculateTotal = computed(() => {
   return shoppingCart.value.reduce((total, cart) => {
-    return total + cart.product.price * cart.amount;
+    return total + cart.item.price * cart.amount;
   }, 0);
 });
 

@@ -72,4 +72,8 @@ input {
 
 a {
     text-decoration: none;
+    color: inherit; /* Keeps the color consistent with the surrounding text */
+}
+a:visited {
+    color: inherit; /* Ensures visited links have the same color as unvisited links */
 }

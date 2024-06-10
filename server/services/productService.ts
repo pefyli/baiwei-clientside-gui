@@ -1,3 +1,4 @@
+import { Item } from "~/models/ItemModel";
 import { Media } from "~/models/MediaModel";
 import { Product } from "~/models/ProductModel";
 
@@ -18,6 +19,18 @@ export async function getProducts(): Promise<Product[]> {
   return productList;
 }
 
+export async function getProductItemsById(productId: number): Promise<Product> {
+  const response: any = await $fetch("/api/product/" + productId + "/item", {
+    onRequest({ options }) {
+      options.method = "GET";
+    },
+    onRequestError({ error }) {
+      throw new Error(error.message);
+    },
+  });
+  return new Product(response.data);
+}
+
 export async function getProductById(productId: number): Promise<Product> {
   const response: any = await $fetch("/api/product/" + productId, {
     onRequest({ options }) {
@@ -28,6 +41,18 @@ export async function getProductById(productId: number): Promise<Product> {
     },
   });
   return new Product(response.data);
+}
+
+export async function getItemById(itemId: number): Promise<Item> {
+  const response: any = await $fetch("/api/item/" + itemId, {
+    onRequest({ options }) {
+      options.method = "GET";
+    },
+    onRequestError({ error }) {
+      throw new Error(error.message);
+    },
+  });
+  return new Item(response.data);
 }
 
 export async function getProductMediaByProductId(productId: number): Promise<Media[]> {
