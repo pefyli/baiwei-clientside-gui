@@ -30,10 +30,10 @@ export async function getMemberCart(memberId: number): Promise<ShoppingCart[]> {
   return shoppingCartList;
 }
 
-export async function updateProductAmount(cart: ShoppingCart) {
+export async function updateItemAmount(cart: ShoppingCart) {
   const response: any = await $fetch("/api/cart/" + cart.cart_id, {
     onRequest({ options }) {
-      options.body = { member_id: cart.member_id, product_id: cart.product.product_id, amount: cart.item.quantity };
+      options.body = { item_id: cart.item.item_id, member_id: cart.member_id, amount: cart.amount };
       options.method = "PUT";
     },
     onRequestError({ error }) {

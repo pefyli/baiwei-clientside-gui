@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import { getMember } from "~/server/services/memberService";
-import { getMemberCart, updateProductAmount, deleteCart, cleanupCart } from "~/server/services/cartService";
+import { getMemberCart, updateItemAmount, deleteCart, cleanupCart } from "~/server/services/cartService";
 import { ShoppingCart } from "~/models/ShoppingCartModel";
 import { convertBuffer, getProductById, getProductMediaByProductId } from "~/server/services/productService";
 
@@ -93,7 +93,7 @@ const incrementQuantity = async (cart: ShoppingCart) => {
   if (cart.amount < cart.item.quantity) {
     cart.amount++;
     if (memberId) {
-      await updateProductAmount(cart);
+      await updateItemAmount(cart);
     }
   }
 };
@@ -102,7 +102,8 @@ const decrementQuantity = async (cart: ShoppingCart) => {
   if (cart.amount > 1) {
     cart.amount--;
     if (memberId) {
-      await updateProductAmount(cart);
+      console.log(cart);
+      await updateItemAmount(cart);
     }
   }
 };
