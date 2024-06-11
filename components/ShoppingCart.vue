@@ -1,51 +1,43 @@
 <template>
-  <div class="product-container">
-    <div v-for="cart in shoppingCart" :key="cart.cart_id" style="border-style: double" class="product-card">
-      <div v-if="mediaUrls" class="image-container">
-        <div v-for="(mediaUrl, index) in mediaUrls[cart.item.product_id]" :key="index">
-          <img :src="mediaUrl" alt="Product Image" class="product-image" />
+  <div class="cart-container">
+    <div v-if="!shoppingCart.length" class="empty-cart-message-container">
+      <div class="empty-cart-message">你的購物車目前還是空的</div>
+      <NuxtLink to="/" class="continue-shopping-button"><el-button>去血拚</el-button></NuxtLink>
+    </div>
+
+    <div v-if="shoppingCart.length" class="product-container">
+      <div v-for="cart in shoppingCart" :key="cart.cart_id" class="product-card">
+        <div v-if="mediaUrls" class="image-container">
+          <div v-for="(mediaUrl, index) in mediaUrls[cart.item.product_id]" :key="index">
+            <img :src="mediaUrl" alt="Product Image" class="product-image" />
+          </div>
         </div>
-      </div>
-      <p>
-        <NuxtLink :to="'/productpage?product_id=' + cart.item.product_id">{{ cart.item.product_name }}</NuxtLink>
-      </p>
-      <p>單價: {{ cart.item.price }}</p>
-      <p>顏色: {{ cart.item.color }}</p>
-      <div class="quantity-container">
-        <label for="quantity">數量:</label>
-        <div class="input-group">
-          <button @click="decrementQuantity(cart)">-</button>
-          <span>{{ cart.amount }}</span>
-          <button @click="incrementQuantity(cart)">+</button>
-        </div>
-      </div>
-      <br /><br />
-      <p>目前金額: {{ cart.item.price * cart.amount }}</p>
-      <div class="button-container">
-        <div>
-          <el-button class="product-button" @click="deleteProductFromCart(cart.cart_id)">移除</el-button>
+        <div class="product-details">
+          <p>
+            <NuxtLink :to="'/productpage?product_id=' + cart.item.product_id">{{ cart.item.product_name }}</NuxtLink>
+          </p>
+          <p>單價: {{ cart.item.price }}</p>
+          <p>顏色: {{ cart.item.color }}</p>
+          <div class="quantity-container">
+            <label for="quantity">數量:</label>
+            <div class="input-group">
+              <button @click="decrementQuantity(cart)">-</button>
+              <span>{{ cart.amount }}</span>
+              <button @click="incrementQuantity(cart)">+</button>
+            </div>
+          </div>
+          <p>目前金額: {{ cart.item.price * cart.amount }}</p>
+          <div class="button-container">
+            <el-button class="product-button" @click="deleteProductFromCart(cart.cart_id)">移除</el-button>
+          </div>
         </div>
       </div>
     </div>
 
-    <div>
-      <div>
-        <div v-if="!shoppingCart.length" class="empty-cart-message-container">
-          <div class="empty-cart-message">你的購物車目前還是空的</div>
-          <NuxtLink to="/" class="continue-shopping-button"><el-button>去血拚</el-button></NuxtLink>
-        </div>
-      </div>
-      <div>
-        <div>
-          <el-button v-if="shoppingCart.length" class="cleanup-button" @click="cleanupShoppingCart">清空購物車</el-button>
-        </div>
-        <div style="margin-left: 80px">
-          <el-button v-if="shoppingCart.length" class="payment-button">結帳</el-button>
-        </div>
-        <div>
-          <p v-if="shoppingCart.length" class="total-container">總計: {{ calculateTotal }}</p>
-        </div>
-      </div>
+    <div v-if="shoppingCart.length" class="checkout-container">
+      <el-button class="cleanup-button" @click="cleanupShoppingCart">清空購物車</el-button>
+      <el-button class="payment-button">結帳</el-button>
+      <p class="total-container">總計: {{ calculateTotal }}</p>
     </div>
   </div>
 </template>
@@ -102,7 +94,6 @@ const decrementQuantity = async (cart: ShoppingCart) => {
   if (cart.amount > 1) {
     cart.amount--;
     if (memberId) {
-      console.log(cart);
       await updateItemAmount(cart);
     }
   }
@@ -140,53 +131,115 @@ const cleanupShoppingCart = async () => {
 </script>
 
 <style scoped>
+.cart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.product-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-style: double;
+  background-color: white;
+  margin: 20px;
+  padding: 20px;
+  width: 80%;
+  max-width: 800px; /* Increase size for larger screens */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add some shadow for better visibility */
+}
+
+.image-container {
+  flex: 1;
+  margin-right: 15px;
+}
+
+.product-image {
+  max-width: 150px; /* Adjust based on your design */
+  margin-right: 20px;
+}
+
+.product-details {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
 .quantity-container {
   margin-top: 10px;
 }
+
 .input-group {
   display: flex;
   align-items: center;
 }
+
 .input-group button {
   background-color: #0d0d0d(190 59% 39%);
   color: rgb(39, 38, 38);
   border: none;
   cursor: pointer;
-  padding: 5px 10px;
+  padding: 10px 15px; /* Larger buttons */
+  font-size: 1.2em; /* Larger font size */
 }
+
 .input-group span {
   margin: 0 10px;
+  font-size: 1.2em; /* Larger font size */
 }
-.cleanup-button {
-  position: fixed; /* Fix the cleanup button */
-  bottom: 20px; /* Adjust bottom spacing */
-  right: 70px; /* Adjust right spacing */
-  margin-right: 15px; /* Add margin between the cleanup button and the total container */
-  margin-left: 15px;
+
+.button-container {
+  margin-top: 10px;
 }
+
+.checkout-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.9);
+  margin: 20px;
+  padding: 20px;
+  width: 80%;
+  max-width: 800px; /* Match the max-width of product-card */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Optional: add some shadow for better appearance */
+}
+
+.cleanup-button,
 .payment-button {
-  position: fixed; /* Fix the cleanup button */
-  bottom: 20px; /* Adjust bottom spacing */
-  right: 10px; /* Adjust right spacing */
+  margin: 0 10px;
+  padding: 10px 20px; /* Larger buttons */
+  font-size: 1.1em; /* Larger font size */
+  flex: 1;
 }
+
 .total-container {
-  position: fixed; /* Fix the total container */
-  bottom: 10px; /* Adjust bottom spacing */
-  right: calc(5px + 270px); /* Adjust right spacing */
+  margin-left: 20px;
+  font-size: 1.1em; /* Larger font size */
+  text-align: right; /* Align the total amount to the right */
+  flex: 2;
 }
+
 .empty-cart-message-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   text-align: center;
+  margin-top: 50px;
 }
+
 .empty-cart-message {
   font-size: 1.5em;
   margin-bottom: 20px;
 }
+
 .continue-shopping-button {
-  /* Change color */
-  color: #333; /* Change it to your desired color */
+  color: #333;
 }
 </style>
