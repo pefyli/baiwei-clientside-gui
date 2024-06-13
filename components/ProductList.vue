@@ -1,36 +1,30 @@
 <template>
-  <div>
-    <!-- Order by Time -->
-    <span>排序</span>&nbsp;
-    <select v-model="orderByTime">
-      <option value="" disabled>選擇時間排序方式</option>
-      <option value="orderByTimeDesc">上架時間新到舊</option>
-      <option value="orderByTimeAsc">上架時間舊到新</option>
-    </select>
-    &nbsp;
-    <!-- Order by Price -->
-    <select v-model="orderByPrice">
-      <option value="" disabled>請選擇價格排序方式</option>
-      <option value="orderByPriceAsc">價格由低到高</option>
-      <option value="orderByPriceDesc">價格由高到低</option>
-    </select>
+  <!-- Display Categories as Buttons -->
+  <div class="category-container">
+    <h3>分類</h3>
+    <div class="category-buttons">
+      <button v-for="category in categoryList" :key="category.category_id" class="category-button">
+        {{ category.category_name }}
+      </button>
+    </div>
   </div>
-  <br /><br />
-  <div class="product-container">
-    <div v-for="product in sortedProductList" :key="product.product_id" class="product-card">
-      <p>{{ product.product_name }}</p>
-      <p>產品價格: {{ product.items.at(0)?.price }}</p>
-      <p>庫存量: {{ product.items.at(0)?.quantity }}</p>
-      <div v-if="product.mediaUrls" class="image-container">
-        <div v-for="mediaUrl in product.mediaUrls" :key="mediaUrl">
-          <img :src="mediaUrl" alt="Product Image" class="product-image" />
+  <div class="outer-product-container">
+    <div class="product-container">
+      <div v-for="product in sortedProductList" :key="product.product_id" class="product-card">
+        <p>{{ product.product_name }}</p>
+        <p>產品價格: {{ product.items.at(0)?.price }}</p>
+        <p>庫存量: {{ product.items.at(0)?.quantity }}</p>
+        <div v-if="product.mediaUrls" class="image-container">
+          <div v-for="mediaUrl in product.mediaUrls" :key="mediaUrl">
+            <img :src="mediaUrl" alt="Product Image" class="product-image" />
+          </div>
         </div>
-      </div>
-      <div class="button-container">
-        <div>
-          <NuxtLink :to="'/productpage?product_id=' + product.product_id">
-            <el-button class="product-button">立即購買</el-button>
-          </NuxtLink>
+        <div class="button-container">
+          <div>
+            <NuxtLink :to="'/productpage?product_id=' + product.product_id">
+              <el-button class="product-button">立即購買</el-button>
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </div>
@@ -41,8 +35,11 @@
 import { ref, onMounted, computed, watch } from "vue";
 import type { Product } from "~/models/ProductModel";
 import { getProducts, getProductMediaByProductId, convertBuffer } from "~/server/services/productService";
+import { getAllCategory } from "~/server/services/categoryService";
+import { Category } from "~/models/CategoryModel";
 
 const productList = ref<Product[]>([]); // Initialize as empty array
+const categoryList = ref<Category[]>([]);
 const orderByTime = ref(""); // Default order by time
 const orderByPrice = ref(""); // Default order by price
 
@@ -61,7 +58,13 @@ watch(orderByPrice, (newValue: string, oldValue: any) => {
 
 onMounted(async () => {
   await fetchProductList();
+  await fetchCategories();
 });
+
+const fetchCategories = async () => {
+  const categories = await getAllCategory();
+  categoryList.value = categories;
+};
 
 const fetchProductList = async () => {
   const products = await getProducts();
