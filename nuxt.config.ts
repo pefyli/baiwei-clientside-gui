@@ -12,8 +12,11 @@ export default {
       { name: "format-detection", content: "telephone=no" },
     ],
   },
-  modules: ["@element-plus/nuxt", "@nuxt-alt/proxy", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt"],
+  modules: ["@nuxt/image", "@element-plus/nuxt", "@nuxt-alt/proxy", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt"],
   css: ["@/assets/css/main.css"],
+  image: {
+    dir: "assets/images",
+  },
   plugins: ["@/plugins/pinia.ts"],
   proxy: {
     proxies: {

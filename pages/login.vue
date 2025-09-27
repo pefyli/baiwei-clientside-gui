@@ -1,7 +1,8 @@
 <template lang="pug">
 <div class="parent">
 HeaderBar
-<br><br>
+br
+br
 <div class="child">
 LoginForm
 </div>

@@ -2,5 +2,5 @@
 br
 HeaderBar
 br
-ProductList
+ProductDetail
 </template>
