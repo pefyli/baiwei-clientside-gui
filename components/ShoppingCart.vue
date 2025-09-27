@@ -4,7 +4,6 @@
       <div class="empty-cart-message">你的購物車目前還是空的</div>
       <NuxtLink to="/" class="continue-shopping-button"><el-button>去血拚</el-button></NuxtLink>
     </div>
-
     <div v-if="shoppingCart.length" class="product-container">
       <div v-for="cart in shoppingCart" :key="cart.cart_id" class="product-card">
         <div v-if="mediaUrls" class="image-container">
@@ -33,7 +32,6 @@
         </div>
       </div>
     </div>
-
     <div v-if="shoppingCart.length" class="checkout-container">
       <el-button class="cleanup-button" @click="cleanupShoppingCart">清空購物車</el-button>
       <el-button class="payment-button">結帳</el-button>
@@ -152,8 +150,8 @@ const cleanupShoppingCart = async () => {
   align-items: center;
   border-style: double;
   background-color: white;
-  margin: 20px;
-  padding: 20px;
+  margin: 10px;
+  padding: 15px;
   width: 80%;
   max-width: 800px; /* Increase size for larger screens */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add some shadow for better visibility */
@@ -207,7 +205,7 @@ const cleanupShoppingCart = async () => {
   align-items: center;
   justify-content: space-between;
   background-color: rgba(255, 255, 255, 0.9);
-  margin: 20px;
+  margin: 15px;
   padding: 20px;
   width: 80%;
   max-width: 800px; /* Match the max-width of product-card */
