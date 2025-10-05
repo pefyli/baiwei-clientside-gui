@@ -2,6 +2,8 @@
 
 ## Build Setup
 
+Noted we use node 18.20.4/vite5 as the environment.
+
 ```bash
 # install dependencies
 $ npm install
