@@ -3,14 +3,27 @@
   <div class="category-container">
     <h3>分類</h3>
     <div class="category-buttons">
-      <button v-for="category in categoryList" :key="category.category_id" class="category-button">
+        <button
+          v-for="category in categoryList"
+          :key="category.category_id"
+          class="category-button"
+          :class="{ active: selectedCategoryId === category.category_id }"
+          @click="selectedCategoryId = category.category_id"
+        >
         {{ category.category_name }}
-      </button>
+        </button>
+        <button
+          class="category-button"
+          :class="{ active: selectedCategoryId === null }"
+          @click="selectedCategoryId = null"
+        >
+        全部
+  </button>
     </div>
   </div>
   <div class="outer-product-container">
     <div class="product-container">
-      <div v-for="product in sortedProductList" :key="product.product_id" class="product-card">
+      <div v-for="product in filteredProductList" :key="product.product_id" class="product-card">
         <p>{{ product.product_name }}</p>
         <p>產品價格: {{ product.items.at(0)?.price }}</p>
         <p>庫存量: {{ product.items.at(0)?.quantity }}</p>
@@ -42,6 +55,7 @@ const productList = ref<Product[]>([]); // Initialize as empty array
 const categoryList = ref<Category[]>([]);
 const orderByTime = ref(""); // Default order by time
 const orderByPrice = ref(""); // Default order by price
+const selectedCategoryId = ref<number | null>(null);
 
 // Watch for changes in orderByTime and orderByPrice
 watch(orderByTime, (newValue: string, oldValue: string) => {
@@ -102,5 +116,14 @@ const sortedProductList = computed(() => {
     sortedProducts.sort((a, b) => (a.items[0] ? (b.items[0] ? a.items[0].price - b.items[0].price : 1) : -1));
   }
   return sortedProducts;
+});
+
+const filteredProductList = computed(() => {
+  if (!selectedCategoryId.value) {
+    return sortedProductList.value;
+  }
+  return sortedProductList.value.filter(
+    (p) => p.category_id === selectedCategoryId.value
+  );
 });
 </script>
